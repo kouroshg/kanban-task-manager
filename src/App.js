@@ -44,7 +44,7 @@ function App() {
           return (
             <Col key={index} lg="3" xs="12" className="p-1">
               <Column
-                onAddTask={()=>handleAddTask(index)}
+                onAddTask={() => handleAddTask(index)}
                 title={column.title}
                 color={column.color}
               >
