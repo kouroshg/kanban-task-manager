@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Container, Row, Col } from "reactstrap";
-import TaskList from "./components/taskList";
+import Task from "./components/task";
 import Column from "./components/column";
 import uniqid from "uniqid";
 
@@ -16,9 +16,24 @@ function App() {
 
   const handleAddTask = (index) => {
     let clone = [...columns];
+    const uniqId = uniqid();
     clone[index].tasks.push(
-      <TaskList color={clone[index].color} key={uniqid()}></TaskList>
+      <Task
+        id={uniqId}
+        onRemoveTask={() => handleRemoveTask(index, uniqId)}
+        color={clone[index].color}
+        key={uniqId}
+      ></Task>
     );
+    setColumns(clone);
+  };
+
+  const handleRemoveTask = (columnIndex, id) => {
+    let clone = [...columns];
+    const taskIndex = clone[columnIndex].tasks.findIndex(
+      (t) => t.props.id === id
+    );
+    clone[columnIndex].tasks.splice(taskIndex, 1);
     setColumns(clone);
   };
 

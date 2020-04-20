@@ -13,7 +13,16 @@ import {
 } from "reactstrap";
 
 const Task = (props) => {
-  const { id, parentId, description, status, color, children } = props;
+  const {
+    id,
+    parentId,
+    description,
+    status,
+    color,
+    children,
+    onRemoveTask,
+  } = props;
+
   const [editMode, setEditMode] = useState(false);
   const [taskDescription, setTaskDescription] = useState(
     props.description || ""
@@ -23,26 +32,33 @@ const Task = (props) => {
     <>
       <Container>
         <Row>
-          <Card color="dark" inverse className="w-100 border-0">
-            <Col className="w-100 p-0">
+          <Card
+            color="dark"
+            inverse
+            className={`w-100 border-1 mb-1 border-${color}`}
+          >
+            <Col className="w-100 p-1">
               {editMode ? (
                 <>
                   <InputGroup>
                     <Input
-                      value={taskDescription}
+                      value={`${taskDescription}`}
                       onChange={(e) => setTaskDescription(e.target.value)}
                       className={`bg-dark text-light px-4 py-4 border-${color}`}
                     />
                   </InputGroup>
                   <Button
-                  className="my-1"
+                    className="my-1"
                     onClick={() => {
                       setEditMode(false);
                     }}
                   >
                     Done
                   </Button>
-                  <h3 className="float-right my-1">
+                  <h3
+                    onClick={onRemoveTask}
+                    className="float-right my-1"
+                  >
                     <FiTrash2 />
                   </h3>
                 </>
@@ -51,9 +67,9 @@ const Task = (props) => {
                   onClick={() => {
                     setEditMode(true);
                   }}
-                  className="px-4 py-2"
+                  className="px-4 py-2 bg-dark rounded"
                 >
-                  {taskDescription || "New task, tap to edit"}
+                  {taskDescription || "Tap to edit"}
                 </CardTitle>
               )}
             </Col>
