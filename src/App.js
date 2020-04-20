@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./App.css";
-import { DragDropContext } from "react-beautiful-dnd";
 import { Container, Row, Col } from "reactstrap";
+import { DragDropContext } from "react-beautiful-dnd";
+import uniqid from "uniqid";
+
 import Task from "./components/task";
 import Column from "./components/column";
-import uniqid from "uniqid";
 
 function App() {
   const [columns, setColumns] = useState([
@@ -20,6 +21,7 @@ function App() {
     clone[index].tasks.push(
       <Task
         id={uniqId}
+        taskIndex={clone[index].tasks.length - 1}
         onRemoveTask={() => handleRemoveTask(index, uniqId)}
         color={clone[index].color}
         key={uniqId}
@@ -37,24 +39,29 @@ function App() {
     setColumns(clone);
   };
 
+  const dragEndHandler = (result) => {};
+
   return (
-    <Container>
-      <Row>
-        {columns.map((column, index) => {
-          return (
-            <Col key={index} lg="3" xs="12" className="p-1">
-              <Column
-                onAddTask={() => handleAddTask(index)}
-                title={column.title}
-                color={column.color}
-              >
-                {column.tasks}
-              </Column>
-            </Col>
-          );
-        })}
-      </Row>
-    </Container>
+    <DragDropContext onDragEnd={dragEndHandler}>
+      <Container>
+        <Row>
+          {columns.map((column, index) => {
+            return (
+              <Col key={index} lg="3" xs="12" className="p-1">
+                <Column
+                  onAddTask={() => handleAddTask(index)}
+                  title={column.title}
+                  color={column.color}
+                  columnId={index}
+                >
+                  {column.tasks}
+                </Column>
+              </Col>
+            );
+          })}
+        </Row>
+      </Container>
+    </DragDropContext>
   );
 }
 

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Button, Card, CardHeader } from "reactstrap";
+import { Droppable } from "react-beautiful-dnd";
 
 const Column = (props) => {
-  const { color, title, children, onAddTask } = props;
-
+  const { color, title, children, onAddTask, columnId } = props;
   return (
     <Container id="column">
       <Row id="column-header">
@@ -13,8 +13,19 @@ const Column = (props) => {
           </Card>
         </Col>
       </Row>
-      <Row id="tasks">
-        <Col className="pt-1 p-0">{children}</Col>
+      <Row>
+        <Droppable droppableId={title}>
+          {(provided) => (
+            <div className="w-100"
+              id="tasks"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              <Col className="pt-1 p-0">{children}</Col>
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       </Row>
       <Row id="add-new-task">
         <Col className="p-0 bg-dark rounded-lg">
