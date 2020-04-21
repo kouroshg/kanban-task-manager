@@ -1,4 +1,4 @@
-import React, { useState, innerRef } from "react";
+import React, { useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { Draggable } from "react-beautiful-dnd";
 
@@ -16,23 +16,21 @@ import {
 const Task = (props) => {
   const {
     id,
-    taskIndex,
-    parentId,
-    description,
-    status,
+    columnId,
+    index,
+    value,
     color,
     children,
     onRemoveTask,
+    onUpdateTask,
   } = props;
 
   const [editMode, setEditMode] = useState(false);
-  const [taskDescription, setTaskDescription] = useState(
-    props.description || ""
-  );
+  const [inputValue, setInputValue] = useState(value);
 
   return (
     <>
-      <Draggable draggableId={id} index={taskIndex}>
+      <Draggable draggableId={id} index={index}>
         {(provided) => (
           <div
             {...provided.draggableProps}
@@ -51,8 +49,8 @@ const Task = (props) => {
                       <>
                         <InputGroup>
                           <Input
-                            value={`${taskDescription}`}
-                            onChange={(e) => setTaskDescription(e.target.value)}
+                            value={`${inputValue}`}
+                            onChange={(e) => setInputValue(e.target.value)}
                             className={`bg-dark text-light px-4 py-4 border-${color}`}
                           />
                         </InputGroup>
@@ -60,11 +58,18 @@ const Task = (props) => {
                           className="my-1"
                           onClick={() => {
                             setEditMode(false);
+                            onUpdateTask(columnId, index, inputValue);
                           }}
                         >
                           Done
                         </Button>
-                        <h3 onClick={onRemoveTask} className="float-right my-1">
+                        <h3
+                          onClick={() => {
+                            setEditMode(false);
+                            onRemoveTask(columnId, index);
+                          }}
+                          className="float-right my-1"
+                        >
                           <FiTrash2 />
                         </h3>
                       </>
@@ -75,7 +80,7 @@ const Task = (props) => {
                         }}
                         className="px-4 py-2 bg-dark rounded"
                       >
-                        {taskDescription || "Tap to edit"}
+                        {value}
                       </CardTitle>
                     )}
                   </Col>

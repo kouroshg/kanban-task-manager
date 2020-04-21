@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import "./App.css";
 import { Container, Row, Col } from "reactstrap";
 import { DragDropContext } from "react-beautiful-dnd";
-import uniqid from "uniqid";
-
-import Task from "./components/task";
 import Column from "./components/column";
 
 function App() {
@@ -15,31 +12,52 @@ function App() {
     { title: "Complete", color: "success", tasks: [] },
   ]);
 
-  const handleAddTask = (index) => {
+  const handleAddTask = (colIndex) => {
     let clone = [...columns];
-    const uniqId = uniqid();
-    clone[index].tasks.push(
-      <Task
-        id={uniqId}
-        taskIndex={clone[index].tasks.length - 1}
-        onRemoveTask={() => handleRemoveTask(index, uniqId)}
-        color={clone[index].color}
-        key={uniqId}
-      ></Task>
-    );
+    clone[colIndex].tasks.push("new task");
     setColumns(clone);
   };
 
-  const handleRemoveTask = (columnIndex, id) => {
+  const handleUpdateTask = (colIndex, taskIndex, value) => {
     let clone = [...columns];
-    const taskIndex = clone[columnIndex].tasks.findIndex(
-      (t) => t.props.id === id
-    );
+    clone[colIndex].tasks[taskIndex] = value;
+    setColumns(clone);
+  };
+
+  const handleRemoveTask = (columnIndex, taskIndex) => {
+    let clone = [...columns];
     clone[columnIndex].tasks.splice(taskIndex, 1);
     setColumns(clone);
   };
 
-  const dragEndHandler = (result) => {};
+  const dragEndHandler = (result) => {
+    const { source, destination } = result;
+
+    if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    let sourceColumnIndex = columns.findIndex(
+      (c) => c.title === source.droppableId
+    );
+    let destColumnIndex = columns.findIndex(
+      (c) => c.title === destination.droppableId
+    );
+    let sourceColumn = columns[sourceColumnIndex];
+    let destColumn = columns[destColumnIndex];
+    let sourceTask = sourceColumn.tasks[source.index];
+
+    sourceColumn.tasks.splice(source.index, 1);
+    destColumn.tasks.splice(destination.index, 0, sourceTask);
+
+    let clone = [...columns];
+
+    setColumns(clone);
+  };
 
   return (
     <DragDropContext onDragEnd={dragEndHandler}>
@@ -49,13 +67,12 @@ function App() {
             return (
               <Col key={index} lg="3" xs="12" className="p-1">
                 <Column
-                  onAddTask={() => handleAddTask(index)}
-                  title={column.title}
-                  color={column.color}
-                  columnId={index}
-                >
-                  {column.tasks}
-                </Column>
+                  onAddTask={handleAddTask}
+                  onRemoveTask={handleRemoveTask}
+                  onUpdateTask={handleUpdateTask}
+                  id={index}
+                  {...column}
+                ></Column>
               </Col>
             );
           })}
