@@ -46,7 +46,7 @@ const Column = (props) => {
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              <Col className="pt-1 p-0">
+              <Col className="pt-1 p-1">
                 {tasks.map((task, index) => (
                   <Task
                     onRemoveTask={onRemoveTask}

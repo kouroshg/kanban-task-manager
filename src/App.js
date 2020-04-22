@@ -65,7 +65,7 @@ function App() {
         <Row>
           {columns.map((column, index) => {
             return (
-              <Col key={index} lg="3" xs="12" className="p-1">
+              <Col key={index} lg="3" xs="12" className="p-2">
                 <Column
                   onAddTask={handleAddTask}
                   onRemoveTask={handleRemoveTask}
