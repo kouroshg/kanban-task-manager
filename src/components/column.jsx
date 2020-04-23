@@ -20,6 +20,7 @@ const Column = (props) => {
     title,
     tasks,
     onAddTask,
+    onAddSubtask,
     onRemoveTask,
     onUpdateTask,
   } = props;
@@ -51,6 +52,7 @@ const Column = (props) => {
                   <Task
                     onRemoveTask={onRemoveTask}
                     onUpdateTask={onUpdateTask}
+                    onAddSubtask={onAddSubtask}
                     value={task}
                     color={color}
                     columnId={id}
@@ -67,9 +69,12 @@ const Column = (props) => {
       </Row>
       <Row id="add-new-task">
         <Col className="p-0 bg-dark rounded-lg">
-          <Button onClick={() => onAddTask(id)} className="w-100 bg-dark border-0 rounded-lg">
+          <Button
+            onClick={() => onAddTask(id)}
+            className="w-100 bg-dark border-0 rounded-lg"
+          >
             <h3 className="m-0 float-left">
-              <IoIosAdd/>
+              <IoIosAdd />
             </h3>
             <Label className="m-2 float-left">Add a task</Label>
           </Button>

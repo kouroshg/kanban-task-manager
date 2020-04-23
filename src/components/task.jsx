@@ -4,15 +4,19 @@ import { Draggable } from "react-beautiful-dnd";
 import { IoIosAdd } from "react-icons/io";
 
 import {
+  Container,
   Card,
   CardTitle,
-  Container,
   Row,
   Col,
   InputGroup,
   Input,
   Button,
+  ListGroup,
+  ListGroupItem,
 } from "reactstrap";
+
+import SubTask from "./subTask";
 
 const Task = (props) => {
   const {
@@ -21,13 +25,13 @@ const Task = (props) => {
     index,
     value,
     color,
-    children,
     onRemoveTask,
     onUpdateTask,
+    onAddSubtask,
   } = props;
 
   const [editMode, setEditMode] = useState(false);
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState(value.title);
 
   return (
     <>
@@ -67,12 +71,7 @@ const Task = (props) => {
                               Done
                             </Button>
                           </Col>
-                          <Col sm="2">
-                            <h3>
-                              <IoIosAdd />
-                            </h3>
-                          </Col>
-                          <Col sm="6" className="float-right">
+                          <Col className="float-right">
                             <h3
                               onClick={() => {
                                 setEditMode(false);
@@ -86,14 +85,41 @@ const Task = (props) => {
                         </Row>
                       </>
                     ) : (
-                      <CardTitle
-                        onClick={() => {
-                          setEditMode(true);
-                        }}
-                        className="px-4 py-2 bg-dark rounded"
-                      >
-                        {value}
-                      </CardTitle>
+                      <>
+                        <Row className="flex-nowrap shadow-lg mb-2">
+                          <Col>
+                            <CardTitle
+                              onClick={() => {
+                                setEditMode(true);
+                              }}
+                              className="px-4 py-2 bg-dark rounded"
+                            >
+                              {value.title}
+                            </CardTitle>
+                          </Col>
+                          <Col
+                            onClick={() => onAddSubtask(columnId, index)}
+                            xs="2"
+                            className="m-0 p-0 float-right"
+                          >
+                            <h3>
+                              <IoIosAdd />
+                            </h3>
+                          </Col>
+                        </Row>
+                        <ListGroup>
+                          {value.subtasks.map((item, index) => {
+                            return (
+                              <ListGroupItem
+                                key={index}
+                                className={`bg-${color} p-2 mb-1 rounded-pill`}
+                              >
+                                <SubTask>{item}</SubTask>
+                              </ListGroupItem>
+                            );
+                          })}
+                        </ListGroup>
+                      </>
                     )}
                   </Col>
                 </Card>

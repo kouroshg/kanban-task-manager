@@ -5,22 +5,46 @@ import { DragDropContext } from "react-beautiful-dnd";
 import Column from "./components/column";
 
 function App() {
+  class task {
+    constructor(title, subtasks) {
+      this.title = title;
+      this.subtasks = subtasks;
+    }
+  }
   const [columns, setColumns] = useState([
-    { title: "Tasks", color: "secondary", tasks: [] },
-    { title: "In Progress", color: "primary", tasks: [] },
+    {
+      title: "Tasks",
+      color: "secondary",
+      tasks: [],
+    },
+    {
+      title: "In Progress",
+      color: "primary",
+      tasks: [],
+    },
     { title: "Done", color: "info", tasks: [] },
-    { title: "Complete", color: "success", tasks: [] },
+    {
+      title: "Complete",
+      color: "success",
+      tasks: [],
+    },
   ]);
 
   const handleAddTask = (colIndex) => {
     let clone = [...columns];
-    clone[colIndex].tasks.push("new task");
+    clone[colIndex].tasks.push(new task("new task", []));
+    setColumns(clone);
+  };
+
+  const handleAddSubtask = (colIndex, taskIndex) => {
+    let clone = [...columns];
+    clone[colIndex].tasks[taskIndex].subtasks.push(["new subtask"]);
     setColumns(clone);
   };
 
   const handleUpdateTask = (colIndex, taskIndex, value) => {
     let clone = [...columns];
-    clone[colIndex].tasks[taskIndex] = value;
+    clone[colIndex].tasks[taskIndex].title = value;
     setColumns(clone);
   };
 
@@ -68,6 +92,7 @@ function App() {
               <Col key={index} lg="3" xs="12" className="p-2">
                 <Column
                   onAddTask={handleAddTask}
+                  onAddSubtask={handleAddSubtask}
                   onRemoveTask={handleRemoveTask}
                   onUpdateTask={handleUpdateTask}
                   id={index}
