@@ -42,6 +42,12 @@ function App() {
     setColumns(clone);
   };
 
+  const handleSubtaskRemove = (colIndex, taskIndex, subtaskIndex) => {
+    let clone = [...columns];
+    clone[colIndex].tasks[taskIndex].subtasks.splice(subtaskIndex, 1);
+    setColumns(clone);
+  };
+
   const handleUpdateTask = (colIndex, taskIndex, value) => {
     let clone = [...columns];
     clone[colIndex].tasks[taskIndex].title = value;
@@ -94,6 +100,7 @@ function App() {
                   onAddTask={handleAddTask}
                   onAddSubtask={handleAddSubtask}
                   onRemoveTask={handleRemoveTask}
+                  onRemoveSubtask={handleSubtaskRemove}
                   onUpdateTask={handleUpdateTask}
                   id={index}
                   {...column}

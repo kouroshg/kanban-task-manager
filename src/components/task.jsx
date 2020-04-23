@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { FiTrash2 } from "react-icons/fi";
 import { Draggable } from "react-beautiful-dnd";
+import { FiTrash2 } from "react-icons/fi";
 import { IoIosAdd } from "react-icons/io";
 
 import {
@@ -28,6 +28,7 @@ const Task = (props) => {
     onRemoveTask,
     onUpdateTask,
     onAddSubtask,
+    onRemoveSubtask,
   } = props;
 
   const [editMode, setEditMode] = useState(false);
@@ -102,19 +103,28 @@ const Task = (props) => {
                             xs="2"
                             className="m-0 p-0 float-right"
                           >
-                            <h3>
-                              <IoIosAdd />
-                            </h3>
+                            <a href="#" className="text-light">
+                              <h3>
+                                <IoIosAdd />
+                              </h3>
+                            </a>
                           </Col>
                         </Row>
                         <ListGroup>
-                          {value.subtasks.map((item, index) => {
+                          {value.subtasks.map((item, subtaskIndex) => {
                             return (
                               <ListGroupItem
                                 key={index}
                                 className={`bg-${color} p-2 mb-1 rounded-pill`}
                               >
-                                <SubTask>{item}</SubTask>
+                                <SubTask
+                                  columnId={columnId}
+                                  taskId={index}
+                                  index={subtaskIndex}
+                                  onRemoveSubtask={onRemoveSubtask}
+                                >
+                                  {item}
+                                </SubTask>
                               </ListGroupItem>
                             );
                           })}
