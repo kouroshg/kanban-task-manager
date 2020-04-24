@@ -30,6 +30,7 @@ function App() {
     },
   ]);
 
+  const status = { idle: 0, "in progress": 1, done: 2, complete: 3 };
   const handleAddTask = (colIndex) => {
     let clone = [...columns];
     clone[colIndex].tasks.push(new task("new task", []));
@@ -38,7 +39,11 @@ function App() {
 
   const handleAddSubtask = (colIndex, taskIndex) => {
     let clone = [...columns];
-    clone[colIndex].tasks[taskIndex].subtasks.push(["new subtask"]);
+    clone[colIndex].tasks[taskIndex].subtasks.push({
+      title: "new subtask",
+      statusId: status.idle,
+      statusValue: Object.keys(status)[0],
+    });
     setColumns(clone);
   };
 
@@ -57,6 +62,19 @@ function App() {
   const handleRemoveTask = (columnIndex, taskIndex) => {
     let clone = [...columns];
     clone[columnIndex].tasks.splice(taskIndex, 1);
+    setColumns(clone);
+  };
+
+  const handleSubtaskClick = (columnIndex, taskIndex, subtaskIndex) => {
+    let clone = [...columns];
+    let subtask = clone[columnIndex].tasks[taskIndex].subtasks[subtaskIndex];
+    let statusIndex = subtask.statusId;
+    statusIndex += 1;
+    statusIndex = Math.min(Object.keys(status).length, statusIndex);
+    statusIndex = statusIndex === Object.keys(status).length ? 0 : statusIndex;
+    subtask.statusId = statusIndex;
+    subtask.statusValue = Object.keys(status)[statusIndex];
+
     setColumns(clone);
   };
 
@@ -102,6 +120,7 @@ function App() {
                   onRemoveTask={handleRemoveTask}
                   onRemoveSubtask={handleSubtaskRemove}
                   onUpdateTask={handleUpdateTask}
+                  onSubtaskClick={handleSubtaskClick}
                   id={index}
                   {...column}
                 ></Column>

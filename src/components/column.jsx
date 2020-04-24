@@ -24,6 +24,7 @@ const Column = (props) => {
     onRemoveTask,
     onRemoveSubtask,
     onUpdateTask,
+    onSubtaskClick,
   } = props;
 
   return (
@@ -55,6 +56,7 @@ const Column = (props) => {
                     onUpdateTask={onUpdateTask}
                     onAddSubtask={onAddSubtask}
                     onRemoveSubtask={onRemoveSubtask}
+                    onSubtaskClick={onSubtaskClick}
                     value={task}
                     color={color}
                     columnId={id}
