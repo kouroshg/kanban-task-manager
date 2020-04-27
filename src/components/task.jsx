@@ -13,7 +13,6 @@ import {
   Input,
   Button,
   ListGroup,
-  ListGroupItem,
 } from "reactstrap";
 
 import SubTask from "./subTask";
@@ -30,6 +29,7 @@ const Task = (props) => {
     onAddSubtask,
     onRemoveSubtask,
     onSubtaskClick,
+    onSubtaskEdit,
   } = props;
 
   const [editMode, setEditMode] = useState(false);
@@ -101,42 +101,29 @@ const Task = (props) => {
     );
   };
 
-  const getSubtaskColor = (statusValue) => {
-    switch (statusValue) {
-      case "idle":
-        return "dark";
-      case "in progress":
-        return "primary";
-      case "done":
-        return "info";
-      case "complete":
-        return "success";
-      default:
-        break;
-    }
-  };
-
   const renderSubTasks = () => {
     return (
       <ListGroup>
         {value.subtasks.map((item, subtaskIndex) => {
           return (
-            <ListGroupItem
+            // <ListGroupItem
+            // className={`bg-${getSubtaskColor(
+            //   item.statusValue
+            //   )} p-2 mb-1 rounded-pill`}
+            //   >
+            <SubTask
               key={subtaskIndex}
-              className={`bg-${getSubtaskColor(
-                item.statusValue
-              )} p-2 mb-1 rounded-pill`}
-              onClick={() => onSubtaskClick(columnId, index, subtaskIndex)}
+              columnId={columnId}
+              taskId={index}
+              index={subtaskIndex}
+              onRemoveSubtask={onRemoveSubtask}
+              onSubtaskClick={onSubtaskClick}
+              onSubtaskEdit={onSubtaskEdit}
+              statusValue={item.statusValue}
             >
-              <SubTask
-                columnId={columnId}
-                taskId={index}
-                index={subtaskIndex}
-                onRemoveSubtask={onRemoveSubtask}
-              >
-                {item}
-              </SubTask>
-            </ListGroupItem>
+              {item}
+            </SubTask>
+            // </ListGroupItem>
           );
         })}
       </ListGroup>

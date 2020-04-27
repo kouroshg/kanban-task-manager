@@ -78,6 +78,12 @@ function App() {
     setColumns(clone);
   };
 
+  const handleSubtaskEdit = (columnIndex, taskIndex, subtaskIndex, value) => {
+    let clone = [...columns];
+    clone[columnIndex].tasks[taskIndex].subtasks[subtaskIndex].title = value;
+
+    setColumns(clone);
+  };
   const dragEndHandler = (result) => {
     const { source, destination } = result;
 
@@ -121,6 +127,7 @@ function App() {
                   onRemoveSubtask={handleSubtaskRemove}
                   onUpdateTask={handleUpdateTask}
                   onSubtaskClick={handleSubtaskClick}
+                  onSubtaskEdit={handleSubtaskEdit}
                   id={index}
                   {...column}
                 ></Column>
