@@ -35,7 +35,7 @@ const Column = (props) => {
           <Card inverse color={color} className="border-0">
             <CardHeader className="">
               <Badge className="p-2 position-absolute bg-dark border-0 rounded-pill">
-                {tasks.length}
+                {tasks === undefined ? 0 : tasks.length}
               </Badge>
               <Label style={{ marginLeft: 30 }}>{title}</Label>
             </CardHeader>
@@ -51,22 +51,24 @@ const Column = (props) => {
               {...provided.droppableProps}
             >
               <Col className="pt-1 p-1">
-                {tasks.map((task, index) => (
-                  <Task
-                    onRemoveTask={onRemoveTask}
-                    onUpdateTask={onUpdateTask}
-                    onAddSubtask={onAddSubtask}
-                    onRemoveSubtask={onRemoveSubtask}
-                    onSubtaskClick={onSubtaskClick}
-                    onSubtaskEdit={onSubtaskEdit}
-                    value={task}
-                    color={color}
-                    columnId={id}
-                    id={`${id * 100 + index}`}
-                    index={index}
-                    key={index}
-                  ></Task>
-                ))}
+                {tasks === undefined
+                  ? null
+                  : tasks.map((task, index) => (
+                      <Task
+                        onRemoveTask={onRemoveTask}
+                        onUpdateTask={onUpdateTask}
+                        onAddSubtask={onAddSubtask}
+                        onRemoveSubtask={onRemoveSubtask}
+                        onSubtaskClick={onSubtaskClick}
+                        onSubtaskEdit={onSubtaskEdit}
+                        value={task}
+                        color={color}
+                        columnId={id}
+                        id={`${id * 100 + index}`}
+                        index={index}
+                        key={index}
+                      ></Task>
+                    ))}
               </Col>
               {provided.placeholder}
             </div>

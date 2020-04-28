@@ -107,7 +107,7 @@ const SubTask = (props) => {
             {children.title}
           </CardHeader>
           <CardFooter className={`p-0 m-0`}>
-            <Button color="link" className="text-light">
+            <Button color="link" className="text-muted">
               <FiTrash2
                 onClick={() => {
                   onRemoveSubtask(columnId, taskId, index);
@@ -118,7 +118,7 @@ const SubTask = (props) => {
             <Button
               onClick={() => setEditMode(true)}
               color="link"
-              className="float-right px-1 mr-2 text-light"
+              className="float-right px-1 mr-2 text-muted"
             >
               <h5>
                 <FiEdit3 />
@@ -130,7 +130,7 @@ const SubTask = (props) => {
             <Button
               color="link"
               onClick={() => onSubtaskClick(columnId, taskId, index)}
-              className="float-right px-1 text-light"
+              className="float-right px-1 text-muted"
             >
               <h5>{renderStatusIcon(children.statusValue)}</h5>
             </Button>

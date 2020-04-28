@@ -107,7 +107,8 @@ const Task = (props) => {
         <Row>
           <Col>
             <Progress
-              color="success"
+              animated={value.progress < 100 ? true : false}
+              color={value.progress === 100 ? "success" : `${color}`}
               style={{ height: ".5rem" }}
               value={value.progress}
               className="bg-dark"
@@ -119,6 +120,8 @@ const Task = (props) => {
   };
 
   const renderSubTasks = () => {
+    if (value.subtasks === undefined) return;
+
     return (
       <ListGroup>
         {value.subtasks.map((item, subtaskIndex) => {

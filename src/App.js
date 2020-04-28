@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Container, Row, Col } from "reactstrap";
 import { DragDropContext } from "react-beautiful-dnd";
 import Column from "./components/column";
+import Axios from "axios";
 
 function App() {
   class task {
@@ -31,39 +32,91 @@ function App() {
     },
   ]);
 
+  useEffect(() => {
+    getDataFromFirebaseDB();
+  }, []);
+
+  const getDataFromFirebaseDB = () => {
+    const firebase_db = "https://kanban-386e7.firebaseio.com/.json";
+
+    Axios({
+      method: "get",
+      url: firebase_db,
+    }).then(
+      (response) => {
+        if (response.status === 200) {
+          setColumns(response.data);
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+  const setDataToFirebaseDB = () => {
+    const firebase_db = "https://kanban-386e7.firebaseio.com/.json";
+
+    Axios({
+      method: "put",
+      url: firebase_db,
+      data: JSON.stringify(columns),
+    }).then(
+      (response) => {
+        console.log(response.status);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
   const status = { idle: 0, "in progress": 1, done: 2, complete: 3 };
+  const updateColumns = (data) => {
+    setColumns(data);
+    setDataToFirebaseDB();
+  };
+
   const handleAddTask = (colIndex) => {
     let clone = [...columns];
+    let column = clone[colIndex];
+    if (column.tasks === undefined) column.tasks = [];
     clone[colIndex].tasks.push(new task("new task", []));
-    setColumns(clone);
+    updateColumns(clone);
   };
 
   const handleAddSubtask = (colIndex, taskIndex) => {
     let clone = [...columns];
-    clone[colIndex].tasks[taskIndex].subtasks.push({
+    let task = clone[colIndex].tasks[taskIndex];
+    if (task.subtasks === undefined) task.subtasks = [];
+    task.subtasks.push({
       title: "new subtask",
       statusId: status.idle,
       statusValue: Object.keys(status)[0],
     });
-    setColumns(clone);
+
+    task.progress = calculateProgress(task);
+    updateColumns(clone);
   };
 
   const handleSubtaskRemove = (colIndex, taskIndex, subtaskIndex) => {
     let clone = [...columns];
-    clone[colIndex].tasks[taskIndex].subtasks.splice(subtaskIndex, 1);
-    setColumns(clone);
+    let task = clone[colIndex].tasks[taskIndex];
+    task.subtasks.splice(subtaskIndex, 1);
+    task.progress = calculateProgress(task);
+    updateColumns(clone);
   };
 
   const handleUpdateTask = (colIndex, taskIndex, value) => {
     let clone = [...columns];
     clone[colIndex].tasks[taskIndex].title = value;
-    setColumns(clone);
+    updateColumns(clone);
   };
 
   const handleRemoveTask = (columnIndex, taskIndex) => {
     let clone = [...columns];
     clone[columnIndex].tasks.splice(taskIndex, 1);
-    setColumns(clone);
+    updateColumns(clone);
   };
 
   const handleSubtaskClick = (columnIndex, taskIndex, subtaskIndex) => {
@@ -77,6 +130,19 @@ function App() {
     subtask.statusId = statusIndex;
     subtask.statusValue = Object.keys(status)[statusIndex];
 
+    task.progress = calculateProgress(task);
+
+    updateColumns(clone);
+  };
+
+  const handleSubtaskEdit = (columnIndex, taskIndex, subtaskIndex, value) => {
+    let clone = [...columns];
+    clone[columnIndex].tasks[taskIndex].subtasks[subtaskIndex].title = value;
+
+    updateColumns(clone);
+  };
+
+  const calculateProgress = (task) => {
     let completeCount = 0;
     for (let i = 0; i < task.subtasks.length; i++) {
       const element = task.subtasks[i];
@@ -84,17 +150,8 @@ function App() {
         completeCount++;
       }
     }
-    const progress = (completeCount / task.subtasks.length) * 100;
-    task.progress = progress;
 
-    setColumns(clone);
-  };
-
-  const handleSubtaskEdit = (columnIndex, taskIndex, subtaskIndex, value) => {
-    let clone = [...columns];
-    clone[columnIndex].tasks[taskIndex].subtasks[subtaskIndex].title = value;
-
-    setColumns(clone);
+    return (completeCount / task.subtasks.length) * 100;
   };
 
   const dragEndHandler = (result) => {
@@ -119,11 +176,13 @@ function App() {
     let sourceTask = sourceColumn.tasks[source.index];
 
     sourceColumn.tasks.splice(source.index, 1);
+
+    if (destColumn.tasks === undefined) destColumn.tasks = [];
     destColumn.tasks.splice(destination.index, 0, sourceTask);
 
     let clone = [...columns];
 
-    setColumns(clone);
+    updateColumns(clone);
   };
 
   return (
