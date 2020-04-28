@@ -7,13 +7,11 @@ import {
   Button,
   InputGroup,
   Input,
-  ListGroupItem,
   InputGroupAddon,
   Card,
   CardFooter,
-  CardText,
-  CardSubtitle,
   Badge,
+  CardHeader,
 } from "reactstrap";
 
 const SubTask = (props) => {
@@ -93,31 +91,22 @@ const SubTask = (props) => {
     );
   };
 
-  const shorterText = (text) => {
-    let str = text;
-    if (str.length > 15) {
-      str = `${str.substring(0, 15)}...`;
-    }
-
-    return str;
-  };
-
   return (
-    <Card className={`bg-${getSubtaskColor(statusValue)} p-0 my-1 rounded-lg`}>
+    <Card className={`p-0 my-1 rounded-lg shadow-lg bg-dark`}>
       {editMode ? (
         renderSubtaskEdit()
       ) : (
         <>
-          <CardText
+          <CardHeader
             style={{
               textDecoration:
                 children.statusValue === "complete" ? "line-through" : "",
             }}
-            className="m-3 "
+            className={`bg-${getSubtaskColor(statusValue)}`}
           >
             {children.title}
-          </CardText>
-          <CardFooter className="p-0 m-0">
+          </CardHeader>
+          <CardFooter className={`p-0 m-0`}>
             <Button color="link" className="text-light">
               <FiTrash2
                 onClick={() => {
@@ -135,7 +124,7 @@ const SubTask = (props) => {
                 <FiEdit3 />
               </h5>
             </Button>
-            <Badge style={{color:"light gray"}} disabled>
+            <Badge style={{ color: "light gray" }} disabled>
               <small>{children.statusValue}</small>
             </Badge>
             <Button

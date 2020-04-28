@@ -6,9 +6,10 @@ import Column from "./components/column";
 
 function App() {
   class task {
-    constructor(title, subtasks) {
+    constructor(title, subtasks, progress = 0) {
       this.title = title;
       this.subtasks = subtasks;
+      this.progress = progress;
     }
   }
   const [columns, setColumns] = useState([
@@ -67,13 +68,24 @@ function App() {
 
   const handleSubtaskClick = (columnIndex, taskIndex, subtaskIndex) => {
     let clone = [...columns];
-    let subtask = clone[columnIndex].tasks[taskIndex].subtasks[subtaskIndex];
+    let task = clone[columnIndex].tasks[taskIndex];
+    let subtask = task.subtasks[subtaskIndex];
     let statusIndex = subtask.statusId;
     statusIndex += 1;
     statusIndex = Math.min(Object.keys(status).length, statusIndex);
     statusIndex = statusIndex === Object.keys(status).length ? 0 : statusIndex;
     subtask.statusId = statusIndex;
     subtask.statusValue = Object.keys(status)[statusIndex];
+
+    let completeCount = 0;
+    for (let i = 0; i < task.subtasks.length; i++) {
+      const element = task.subtasks[i];
+      if (element.statusValue === "complete") {
+        completeCount++;
+      }
+    }
+    const progress = (completeCount / task.subtasks.length) * 100;
+    task.progress = progress;
 
     setColumns(clone);
   };
