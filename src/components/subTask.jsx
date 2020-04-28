@@ -9,6 +9,11 @@ import {
   Input,
   ListGroupItem,
   InputGroupAddon,
+  Card,
+  CardFooter,
+  CardText,
+  CardSubtitle,
+  Badge,
 } from "reactstrap";
 
 const SubTask = (props) => {
@@ -25,7 +30,6 @@ const SubTask = (props) => {
 
   const [editMode, setEditMode] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [title, setTitle] = useState(children.title);
 
   const renderStatusIcon = (statusValue) => {
     switch (statusValue) {
@@ -61,21 +65,25 @@ const SubTask = (props) => {
     return (
       <InputGroup>
         <Input
-          className={`text-light rounded-pill bg-dark border-${getSubtaskColor(
+          className={`text-light rounded-lg bg-dark border-${getSubtaskColor(
             statusValue
           )}`}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
 
-        <InputGroupAddon addonType="append" className="rounded-right-pill">
+        <InputGroupAddon addonType="append">
           <Button
             color="link"
             className="text-light"
             onClick={() => {
               setEditMode(false);
-              setTitle(inputValue);
-              onSubtaskEdit(columnId, taskId, index, title);
+              onSubtaskEdit(
+                columnId,
+                taskId,
+                index,
+                inputValue === "" ? children.title : inputValue
+              );
             }}
           >
             <FaCheck />
@@ -85,49 +93,62 @@ const SubTask = (props) => {
     );
   };
 
+  const shorterText = (text) => {
+    let str = text;
+    if (str.length > 15) {
+      str = `${str.substring(0, 15)}...`;
+    }
+
+    return str;
+  };
+
   return (
-    <ListGroupItem
-      className={`bg-${getSubtaskColor(statusValue)} p-0 my-1 rounded-pill`}
-    >
+    <Card className={`bg-${getSubtaskColor(statusValue)} p-0 my-1 rounded-lg`}>
       {editMode ? (
         renderSubtaskEdit()
       ) : (
         <>
-          <Button color="link" className="text-light">
-            <FiTrash2
-              onClick={() => {
-                onRemoveSubtask(columnId, taskId, index);
-              }}
-              className="mx-2"
-            />
-          </Button>
-          <span
+          <CardText
             style={{
               textDecoration:
                 children.statusValue === "complete" ? "line-through" : "",
             }}
+            className="m-3 "
           >
-            {title}
-          </span>
-          <Button
-            onClick={() => setEditMode(true)}
-            color="link"
-            className="float-right px-1 mr-2 text-light"
-          >
-            <h5>
-              <FiEdit3 />
-            </h5>
-          </Button>
-          <Button
-            onClick={() => onSubtaskClick(columnId, taskId, index)}
-            color="link"
-            className="float-right px-1 text-light"
-          >
-            <h5>{renderStatusIcon(children.statusValue)}</h5>
-          </Button>
+            {children.title}
+          </CardText>
+          <CardFooter className="p-0 m-0">
+            <Button color="link" className="text-light">
+              <FiTrash2
+                onClick={() => {
+                  onRemoveSubtask(columnId, taskId, index);
+                }}
+                className="mx-2"
+              />
+            </Button>
+            <Button
+              onClick={() => setEditMode(true)}
+              color="link"
+              className="float-right px-1 mr-2 text-light"
+            >
+              <h5>
+                <FiEdit3 />
+              </h5>
+            </Button>
+            <Badge style={{color:"light gray"}} disabled>
+              <small>{children.statusValue}</small>
+            </Badge>
+            <Button
+              color="link"
+              onClick={() => onSubtaskClick(columnId, taskId, index)}
+              className="float-right px-1 text-light"
+            >
+              <h5>{renderStatusIcon(children.statusValue)}</h5>
+            </Button>
+          </CardFooter>
         </>
       )}
-    </ListGroupItem>
+    </Card>
   );
 };
 

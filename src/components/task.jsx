@@ -51,7 +51,11 @@ const Task = (props) => {
               className="my-1"
               onClick={() => {
                 setEditMode(false);
-                onUpdateTask(columnId, index, inputValue);
+                onUpdateTask(
+                  columnId,
+                  index,
+                  inputValue === "" ? value.title : inputValue
+                );
               }}
             >
               Done
@@ -106,11 +110,6 @@ const Task = (props) => {
       <ListGroup>
         {value.subtasks.map((item, subtaskIndex) => {
           return (
-            // <ListGroupItem
-            // className={`bg-${getSubtaskColor(
-            //   item.statusValue
-            //   )} p-2 mb-1 rounded-pill`}
-            //   >
             <SubTask
               key={subtaskIndex}
               columnId={columnId}
@@ -123,7 +122,6 @@ const Task = (props) => {
             >
               {item}
             </SubTask>
-            // </ListGroupItem>
           );
         })}
       </ListGroup>

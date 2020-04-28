@@ -84,6 +84,7 @@ function App() {
 
     setColumns(clone);
   };
+
   const dragEndHandler = (result) => {
     const { source, destination } = result;
 
